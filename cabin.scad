@@ -69,8 +69,43 @@ dirtceilingelev = floorbeamrise;
 dirtceilingrise = 1/4;
 floorpanelw = ft(4);
 module dirtceiling() {
+  echo();
+  echo("D I R T   C E I L I N G");
   origin = [0, 0, dirtceilingelev];
   announceorigin(origin);
+  panel = [floorpanelw, floory, dirtceilingrise];
+  cubenspeak("OSB", panel, [origin[0],               origin[1], origin[2]]);
+  cubenspeak("OSB", panel, [origin[0]+floorpanelw,   origin[1], origin[2]]);
+  cubenspeak("OSB", panel, [origin[0]+floorpanelw*2, origin[1], origin[2]]);
+}
+
+// F L O O R   J O I S T S
+floorjoistelev = dirtceilingelev + dirtceilingrise;
+floorjoistrise = b4x6[1];
+module floorjoists() {
+  echo();
+  echo("F L O O R   J O I S T S");
+  origin = [0, 0, floorjoistelev];
+  announceorigin(origin);
+  beamboard = b4x6;
+  joistboard = b2x6;
+  beam  = [beamboard[0], floory, beamboard[1]];
+  joist = [joistboard[0], floory-joistboard[0]*2, joistboard[1]];
+  beamw  = beam[0];
+  joistw = joist[0];
+  defaultspacing = 16;
+  cubenspeak("beam",  beam,  [origin[0],                         origin[1],        origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing,          origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*2,        origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*3-joistw, origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*3,        origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*4,        origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*5,        origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*6-joistw, origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*6,        origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*7,        origin[1]+joistw, origin[2]]);
+  cubenspeak("joist", joist, [origin[0]+defaultspacing*8,        origin[1]+joistw, origin[2]]);
+  cubenspeak("beam",  beam,  [origin[0]+defaultspacing*9-beamw,  origin[1],        origin[2]]);
 }
 
 
@@ -78,3 +113,4 @@ module dirtceiling() {
 piers();
 floorbeams();
 dirtceiling();
+floorjoists();
