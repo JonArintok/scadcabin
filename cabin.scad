@@ -21,18 +21,60 @@ b4x6  = [3.5, 5.5];
 b6x6  = [5.5, 5.5];
 
 // TOOLS
-function ft(feet = 1, inches = 0) = 12*feet + inches;
-
+function ft(feet = 0, inches = 0) = 12*feet + inches;
+module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
+  translate(transtep) {
+    cube(cuboid);
+  }
+  echo(name, cuboid, transtep);
+}
+module announceorigin(origin) {echo(origin = origin);}
 
 floorx = ft(12); // from outside edge to outside edge
 floory = ft(10); // from outside edge to outside edge
+floorbeamboard = b6x6;
+floorbeamspacing = floory - floorbeamboard[0]; // center to center
+
+// P I E R S
+module piers() {
+  echo();
+  echo("P I E R S");
+  pierwidth  = 18;
+  pierheight = ft(4);
+  pier = [pierwidth, pierwidth, pierheight];
+  origin = [0, -pierwidth/2 + floorbeamboard[1]/2, -pierheight];
+  announceorigin(origin);
+  translate(origin) {
+    cubenspeak("pier", pier, [0,                               0, 0]);
+    cubenspeak("pier", pier, [0,                floorbeamspacing, 0]);
+    cubenspeak("pier", pier, [floorx-pierwidth, floorbeamspacing, 0]);
+    cubenspeak("pier", pier, [floorx-pierwidth,                0, 0]);
+  }
+}
 
 // F L O O R   B E A M S
-floorbeamcount = 2;
-floorbeam = b6x6;
-floorbeamspacing = (floory-floorbeam[0])/(floorbeamcount-1); // center to center
-cube([floorx, floorbeam[0], floorbeam[1]]);
+floorbeamrise = floorbeamboard[1];
+module floorbeams() {
+  echo();
+  echo("F L O O R   B E A M S");
+  floorbeam = [floorx, floorbeamboard[0], floorbeamboard[1]];
+  origin = [0,0,0];
+  announceorigin(origin);
+  cubenspeak("floorbeam", floorbeam, origin);
+  cubenspeak("floorbeam", floorbeam, [0, floorbeamspacing, 0]);
+}
 
 // D I R T   C E I L I N G
-dirtceilingthickness = 1/4;
+dirtceilingelev = floorbeamrise;
+dirtceilingrise = 1/4;
 floorpanelw = ft(4);
+module dirtceiling() {
+  origin = [0, 0, dirtceilingelev];
+  announceorigin(origin);
+}
+
+
+// D R A W
+piers();
+floorbeams();
+dirtceiling();
