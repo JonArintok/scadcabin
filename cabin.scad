@@ -33,21 +33,20 @@ module announceorigin(origin) {echo(origin = origin);}
 floorx = ft(12); // from outside edge to outside edge
 floory = ft(10); // from outside edge to outside edge
 floorbeamboard = b6x6;
-floorbeamspacing = floory - floorbeamboard[0]; // center to center
 
 // P I E R S
 module piers() {
   echo();
   echo("P I E R S");
-  pierwidth  = 18;
+  pierwidth  = 12;
   pierheight = ft(4);
   pier = [pierwidth, pierwidth, pierheight];
   origin = [0, -pierwidth/2 + floorbeamboard[1]/2, -pierheight];
   announceorigin(origin);
   translate(origin) {
     cubenspeak("pier", pier, [0,                               0, 0]);
-    cubenspeak("pier", pier, [0,                floorbeamspacing, 0]);
-    cubenspeak("pier", pier, [floorx-pierwidth, floorbeamspacing, 0]);
+    cubenspeak("pier", pier, [0,                floory - floorbeamboard[0], 0]);
+    cubenspeak("pier", pier, [floorx-pierwidth, floory - floorbeamboard[0], 0]);
     cubenspeak("pier", pier, [floorx-pierwidth,                0, 0]);
   }
 }
@@ -56,12 +55,12 @@ module piers() {
 floorbeamrise = floorbeamboard[1];
 module floorbeams() {
   echo();
-  echo("F L O O R   B E A M S");
+  echo("FLOOR BEAMS");
   floorbeam = [floorx, floorbeamboard[0], floorbeamboard[1]];
   origin = [0,0,0];
   announceorigin(origin);
   cubenspeak("floorbeam", floorbeam, origin);
-  cubenspeak("floorbeam", floorbeam, [0, floorbeamspacing, 0]);
+  cubenspeak("floorbeam", floorbeam, [0, floory - floorbeamboard[0], 0]);
 }
 
 // D I R T   C E I L I N G
@@ -70,7 +69,7 @@ dirtceilingrise = 1/4;
 floorpanelw = ft(4);
 module dirtceiling() {
   echo();
-  echo("D I R T   C E I L I N G");
+  echo("DIRT CEILING");
   origin = [0, 0, dirtceilingelev];
   announceorigin(origin);
   panel = [floorpanelw, floory, dirtceilingrise];
@@ -84,7 +83,7 @@ floorjoistelev = dirtceilingelev + dirtceilingrise;
 floorjoistrise = b4x6[1];
 module floorjoists() {
   echo();
-  echo("F L O O R   J O I S T S");
+  echo("FLOOR JOISTS");
   origin = [0, 0, floorjoistelev];
   announceorigin(origin);
   beamboard  = b4x6;
@@ -113,14 +112,63 @@ module floorjoists() {
   cubenspeak("joist", joist, [origin[0]+defaultspacing*8,        origin[1]+capw, origin[2]]);
   cubenspeak("beam",  beam,  [origin[0]+defaultspacing*9-beamw,  origin[1],      origin[2]]);
   echo();
-  echo("F L O O R   J O I S T   C A P S");
-  cubenspeak("long cap", cap,  [origin[0]+beamw, origin[1],             origin[2]]);
-  cubenspeak("long cap", cap,  [origin[0]+beamw, origin[1]+floory-capw, origin[2]]);
+  echo("FLOOR JOIST CAPS");
+  cubenspeak("cap", cap,  [origin[0]+beamw, origin[1],             origin[2]]);
+  cubenspeak("cap", cap,  [origin[0]+beamw, origin[1]+floory-capw, origin[2]]);
 }
 
+// S U B F L O O R
+subfloorelev = floorjoistelev + floorjoistrise;
+subfloorrise = 3/4;
+module subfloor() {
+  echo();
+  echo("SUBFLOOR");
+  origin = [0, 0, subfloorelev];
+  announceorigin(origin);
+  panel = [floorpanelw, floory, subfloorrise];
+  cubenspeak("OSB", panel, [origin[0],               origin[1], origin[2]]);
+  cubenspeak("OSB", panel, [origin[0]+floorpanelw,   origin[1], origin[2]]);
+  cubenspeak("OSB", panel, [origin[0]+floorpanelw*2, origin[1], origin[2]]);
+}
+
+wallelev = subfloorelev + subfloorrise;
+studz = ft(12);
+doorroughopenw = 38.25;
+doorroughopenh = 82;
+windowroughopenw = 24;
+windowroughopenh = 29;
+studboard = b2x4;
+studw = studboard[0];
+studh = studboard[1];
+
+// N O R T H   W A L L
+module northwall() {
+  echo();
+  echo("NORTH WALL");
+  origin = [0, 0, wallelev];
+  announceorigin(origin);
+  doorroughopenw = 38.25;
+  doorroughopenh = 82;
+  soleplate = [floorx, studboard[1], studboard[0]];
+  stud  = [studboard[0], studboard[1], studz];
+  cubenspeak("soleplate", soleplate, origin);
+  defaultspacing = 16;
+  cubenspeak("stud", stud, [origin[0],                  origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing,   origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing*2, origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing*3, origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing*4, origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing*5, origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing*6, origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing*7, origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing*8, origin[1], origin[2]+studw]);
+  cubenspeak("stud", stud, [origin[0]+defaultspacing*9, origin[1], origin[2]+studw]);
+}
 
 // D R A W
 piers();
 floorbeams();
 dirtceiling();
 floorjoists();
+subfloor();
+northwall();
