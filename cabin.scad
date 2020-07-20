@@ -28,6 +28,9 @@ module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
   }
   echo(name, cuboid, transtep);
 }
+module ALERT(message = "!!  !!  !!  !!") {
+  echo(message);
+}
 
 floorx = ft(16); // from outside edge to outside edge
 floory = ft(10); // from outside edge to outside edge
@@ -226,7 +229,7 @@ module northwall() {
 // S O U T H   W A L L
 module southwall() {
   echo();
-  echo("NORTH WALL");
+  echo("SOUTH WALL");
   origin = [0, floory-studh, wallelev+studw];
   echo(origin = origin);
   soleplate       = [floorx, studh, studw];
@@ -245,30 +248,30 @@ module southwall() {
   defaultspacing  = 16;
   headerz         = shortstudl - headerboardh - windowdrop;
   lheaderx        = defaultspacing + studw;
-  lheader         = [defaultspacing*2 - studw, headerboardw, headerboardh];
+  header          = [defaultspacing*2 - studw, headerboardw, headerboardh];
   sill            = [windowroughopenw, studh, studw];
   sillz           = headerz - windowroughopenh - studw - windowdrop;
   lsillx          = defaultspacing*3 - studw - windowroughopenw;
+  rsillx          = defaultspacing*9+studw*2;
   lowcripple      = [studw, studh, sillz];
-  lwindowledge    = defaultspacing*3-studw*2-windowroughopenw;
+  lwindowastudx   = defaultspacing*3 - studw*2 - windowroughopenw;
+  rwindowastudx   = defaultspacing*9 + studw*2 + windowroughopenw;
   translate(origin) {
     cubenspeak("soleplate", soleplate, [0, 0, -studw]);
     cubenspeak("cornerstud",  cornerstud);
     cubenspeak("shortstud",   shortstud,   [defaultspacing-studw,     0, 0]);
     cubenspeak("tallstud",    tallstud,    [defaultspacing,           0, 0]);
-    //
     cubenspeak("trimmer",     trimmer,     [defaultspacing + studw,   0, 0]);
-    cubenspeak("trimmer",     trimmer,     [lwindowledge,             0, 0]);
-    cubenspeak("lowcripple",  lowcripple,  [lwindowledge+studw,       0, 0]);
+    cubenspeak("trimmer",     trimmer,     [lwindowastudx,            0, 0]);
+    cubenspeak("lowcripple",  lowcripple,  [lwindowastudx+studw,      0, 0]);
     cubenspeak("lowcripple",  lowcripple,  [defaultspacing*2,         0, 0]);
     cubenspeak("lowcripple",  lowcripple,  [defaultspacing*3-studw*2, 0, 0]);
     cubenspeak("trimmer",     trimmer,     [defaultspacing*3-studw,   0, 0]);
     cubenspeak("sill",        sill,        [lsillx,                   0, sillz]);
-    cubenspeak("header",      lheader,     [lheaderx,                 0, headerz]);
+    cubenspeak("header",      header,      [defaultspacing + studw,   0, headerz]);
     cubenspeak("dropstud",    dropstud,    [defaultspacing*2-studw,   0, shortstudl-windowdrop]);
     cubenspeak("highcripple", highcripple, [defaultspacing*2,         0, shortstudl-windowdrop]);
     cubenspeak("dropstud",    dropstud,    [defaultspacing*3-studw,   0, shortstudl-windowdrop]);
-    //
     cubenspeak("tallstud",    tallstud,    [defaultspacing*3,         0, 0]);
     cubenspeak("shortstud",   shortstud,   [defaultspacing*4-studw,   0, 0]);
     cubenspeak("tallstud",    tallstud,    [defaultspacing*4,         0, 0]);
@@ -282,9 +285,19 @@ module southwall() {
     cubenspeak("tallstud",    tallstud,    [defaultspacing*8,         0, 0]);
     cubenspeak("shortstud",   shortstud,   [defaultspacing*9-studw,   0, 0]);
     cubenspeak("tallstud",    tallstud,    [defaultspacing*9,         0, 0]);
-    *cubenspeak("shortstud",  shortstud,   [defaultspacing*10-studw,  0, 0]);
-    *cubenspeak("tallstud",   tallstud,    [defaultspacing*10,        0, 0]);
-    *cubenspeak("shortstud",  shortstud,   [defaultspacing*11-studw,  0, 0]);
+    //
+    cubenspeak("trimmer",     trimmer,     [defaultspacing*9+studw,   0, 0]);
+    cubenspeak("lowcripple",  lowcripple,  [rsillx,                   0, 0]);
+    cubenspeak("lowcripple",  lowcripple,  [defaultspacing*10,        0, 0]);
+    cubenspeak("lowcripple",  lowcripple,  [rwindowastudx-studw,      0, 0]);
+    cubenspeak("trimmer",     trimmer,     [rwindowastudx,            0, 0]);
+    cubenspeak("trimmer",     trimmer,     [defaultspacing*11-studw,  0, 0]);
+    cubenspeak("sill",        sill,        [rsillx,                   0, sillz]);
+    cubenspeak("header",      header,      [defaultspacing*9+studw,   0, headerz]);
+    cubenspeak("dropstud",    dropstud,    [defaultspacing*10-studw,  0, shortstudl-windowdrop]);
+    cubenspeak("highcripple", highcripple, [defaultspacing*10,        0, shortstudl-windowdrop]);
+    cubenspeak("dropstud",    dropstud,    [defaultspacing*11-studw,  0, shortstudl-windowdrop]);
+    //
     cubenspeak("tallstud",    tallstud,    [defaultspacing*11,        0, 0]);
     cubenspeak("cornerstud",  cornerstud,  [floorx-cornerstudw,       0, 0]);
     cubenspeak("topplate",    topplate,    [0,                        0, tallstudl]);
