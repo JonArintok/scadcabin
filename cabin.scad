@@ -36,7 +36,7 @@ floorx = ft(16); // from outside edge to outside edge
 floory = ft(10); // from outside edge to outside edge
 
 // P I E R S
-module piers() {
+module piers(color) {
   echo();
   echo("P I E R S");
   pierw  = 12;
@@ -46,7 +46,7 @@ module piers() {
   pier = [pierw, pierw, pierh];
   pierspacingx = (floorx-pierw)/3;
   pierspacingy = (floory-pierw)/2;
-  translate(origin) {
+  translate(origin) { color(color) {
     cubenspeak("pier", pier);
     cubenspeak("pier", pier, [pierspacingx,   0,              0]);
     cubenspeak("pier", pier, [pierspacingx*2, 0,              0]);
@@ -57,12 +57,12 @@ module piers() {
     cubenspeak("pier", pier, [pierspacingx,   pierspacingy*2, 0]);
     cubenspeak("pier", pier, [pierspacingx*2, pierspacingy*2, 0]);
     cubenspeak("pier", pier, [pierspacingx*3, pierspacingy*2, 0]);
-  }
+  }}
 }
 
 // F L O O R   B E A M S
 floorbeamrise = b6x6[1];
-module floorbeams() {
+module floorbeams(color) {
   echo();
   echo("FLOOR BEAMS");
   origin = [0,0,0];
@@ -85,24 +85,24 @@ module floorbeams() {
 dirtceilingelev = floorbeamrise;
 dirtceilingrise = 1/4;
 floorpanelw = ft(4);
-module dirtceiling() {
+module dirtceiling(color) {
   echo();
   echo("DIRT CEILING");
   origin = [0, 0, dirtceilingelev];
   echo(origin = origin);
   panel = [floorpanelw, floory, dirtceilingrise];
-  translate(origin) {
+  translate(origin) { color(color) {
     cubenspeak("OSB", panel);
     cubenspeak("OSB", panel, [floorpanelw,   0, 0]);
     cubenspeak("OSB", panel, [floorpanelw*2, 0, 0]);
     cubenspeak("OSB", panel, [floorpanelw*3, 0, 0]);
-  }
+  }}
 }
 
 // F L O O R   J O I S T S
 floorjoistelev = dirtceilingelev + dirtceilingrise;
 floorjoistrise = b4x6[1];
-module floorjoists() {
+module floorjoists(color) {
   echo();
   echo("FLOOR JOISTS");
   origin = [0, 0, floorjoistelev];
@@ -120,7 +120,7 @@ module floorjoists() {
   joist = [joistw, floory-capw*2, joisth];
   cap   = [floorx-beamw*2, beamw, beamh];
   defaultspacing = 16;
-  translate(origin) {
+  translate(origin) { color(color) {
     cubenspeak("beam",  beam);
     cubenspeak("beam",  beam,  [floorx-beamw,            0,    0]);
     cubenspeak("joist", joist, [defaultspacing,          capw, 0]);
@@ -139,24 +139,24 @@ module floorjoists() {
     cubenspeak("joist", joist, [defaultspacing*11,       capw, 0]);
     cubenspeak("cap", cap,  [beamw, 0,           0]);
     cubenspeak("cap", cap,  [beamw, floory-capw, 0]);
-  }
+  }}
 }
 
 // S U B F L O O R
 subfloorelev = floorjoistelev + floorjoistrise;
 subfloorrise = 3/4;
-module subfloor() {
+module subfloor(color) {
   echo();
   echo("SUBFLOOR");
   origin = [0, 0, subfloorelev];
   echo(origin = origin);
   panel = [floorpanelw, floory, subfloorrise];
-  translate(origin) {
+  translate(origin) { color(color) {
     cubenspeak("OSB", panel);
     cubenspeak("OSB", panel, [floorpanelw,   0, 0]);
     cubenspeak("OSB", panel, [floorpanelw*2, 0, 0]);
     cubenspeak("OSB", panel, [floorpanelw*3, 0, 0]);
-  }
+  }}
 }
 
 wallelev = subfloorelev + subfloorrise;
@@ -173,7 +173,7 @@ headerboardw = headerboard[0];
 headerboardh = headerboard[1];
 
 // N O R T H   W A L L
-module northwall() {
+module northwall(color) {
   echo();
   echo("NORTH WALL");
   origin = [0, 0, wallelev+studw];
@@ -195,7 +195,7 @@ module northwall() {
   doorhingebeamx = defaultspacing*11 - thicktrimmerw;
   headerx        = defaultspacing*8 + studw;
   header         = [defaultspacing*3 - studw, headerboardw, headerboardh];
-  translate(origin) {
+  translate(origin) { color(color) {
     cubenspeak("soleplate",    soleplate,    [0,                       0, -studw]);
     cubenspeak("cornerstud",   cornerstud);
     cubenspeak("shortstud",    shortstud,    [defaultspacing+studw,    0, 0]);
@@ -223,11 +223,11 @@ module northwall() {
     cubenspeak("tallstud",  tallstud,        [defaultspacing*11,       0, 0]);
     cubenspeak("cornerstud", cornerstud,     [floorx-cornerstudw,      0, 0]);
     cubenspeak("topplate",  topplate,        [0,                       0, tallstudl]);
-  }
+  }}
 }
 
 // S O U T H   W A L L
-module southwall() {
+module southwall(color) {
   echo();
   echo("SOUTH WALL");
   origin = [0, floory-studh, wallelev+studw];
@@ -257,10 +257,9 @@ module southwall() {
   lwindowastudx   = defaultspacing*3 - studw*2 - windowroughopenw;
   rwindowastudx   = defaultspacing*9 + studw*2 + windowroughopenw;
   c               = -studw/2; // for centering windows
-  translate(origin) {
-    cubenspeak("soleplate", soleplate, [0, 0, -studw]);
+  translate(origin) { color(color) {
+    cubenspeak("soleplate",   soleplate,   [0,                          0, -studw]);
     cubenspeak("cornerstud",  cornerstud);
-    //cubenspeak("shortstud",   shortstud,   [c+defaultspacing-studw,     0, 0]);
     cubenspeak("tallstud",    tallstud,    [c+defaultspacing,           0, 0]);
     cubenspeak("trimmer",     trimmer,     [c+defaultspacing  +studw,   0, 0]);
     cubenspeak("trimmer",     trimmer,     [c+lwindowastudx,            0, 0]);
@@ -302,14 +301,49 @@ module southwall() {
     cubenspeak("tallstud",    tallstud,    [c+defaultspacing*11,        0, 0]);
     cubenspeak("cornerstud",  cornerstud,  [floorx-cornerstudw,         0, 0]);
     cubenspeak("topplate",    topplate,    [0,                          0, tallstudl]);
-  }
+  }}
 }
 
+// E A S T   W A L L
+module eastwall(color) {
+  echo();
+  echo("EAST WALL");
+  origin = [0, studh, wallelev+studw];
+  echo(origin = origin);
+  soleplate = [studh, floory-studh*2, studw];
+  translate(origin) { color(color) {
+    cubenspeak("soleplate",   soleplate,   [0, 0, -studw]);
+  }}
+}
+
+/*colors = [
+  "#f94144",
+  "#f3722c",
+  "#f8961e",
+  "#f9c74f",
+  "#90be6d",
+  "#43aa8b",
+  "#577590"
+];*/
+colors = [
+  "#f29e4c",
+  "#f1c453",
+  "#efea5a",
+  "#b9e769",
+  "#83e377",
+  "#16db93",
+  "#0db39e",
+  "#048ba8",
+  "#2c699a",
+  "#54478c"
+];
+
 // D R A W
-piers();
-floorbeams();
-dirtceiling();
-floorjoists();
-subfloor();
-northwall();
-southwall();
+piers      (colors[0]);
+floorbeams (colors[1]);
+dirtceiling(colors[2]);
+floorjoists(colors[3]);
+subfloor   (colors[4]);
+northwall  (colors[5]);
+southwall  (colors[6]);
+eastwall   (colors[7]);
