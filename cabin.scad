@@ -178,13 +178,14 @@ shortstudl       = doorroughopenh + headerboardh;
 headerz          = shortstudl - headerboardh - windowdrop;
 sillz            = headerz - windowroughopenh - studw - windowdrop;
 lsillx           = studwalk*3 - studw - windowroughopenw; // on south wall
+studelev         = wallelev + studw;
 
 
 // N O R T H   W A L L
 module northwall(color) {
   echo();
   echo("NORTH WALL");
-  origin = [0, 0, wallelev+studw];
+  origin = [0, 0, studelev];
   echo(origin = origin);
   soleplate       = [floorx, studh, studw];
   topplate        = [floorx, studh, studw];
@@ -238,7 +239,7 @@ module northwall(color) {
 module southwall(color) {
   echo();
   echo("SOUTH WALL");
-  origin = [0, floory-studh, wallelev+studw];
+  origin = [0, floory-studh, studelev];
   echo(origin = origin);
   soleplate       = [floorx, studh, studw];
   topplate        = [floorx, studh, studw];
@@ -306,10 +307,10 @@ module southwall(color) {
 
 
 // S H O R T   W A L L
-module shortwall(color, name) {
+module smallwall(color, name) {
   echo();
   echo(name);
-  origin = [0, studh, wallelev+studw];
+  origin = [0, studh, studelev];
   echo(origin = origin);
   soleplatel  = floory-studh*2;
   soleplate   = [studh, soleplatel, studw];
@@ -347,24 +348,44 @@ module shortwall(color, name) {
 }
 // E A S T   W A L L
 module eastwall(color) {
-  shortwall(color, "EAST WALL");
+  smallwall(color, "EAST WALL");
 }
 // W E S T   W A L L
 module westwall(color) {
   translate([floorx-studh, 0, 0]) {
-    shortwall(color, "WEST WALL");
+    smallwall(color, "WEST WALL");
   }
 }
 
-/*colors = [
-  "#f94144",
-  "#f3722c",
-  "#f8961e",
-  "#f9c74f",
-  "#90be6d",
-  "#43aa8b",
-  "#577590"
-];*/
+// L O F T
+
+module loft(color) {
+  echo();
+  echo("LOFT");
+  origin = [0, 0, studelev+shortstudl];
+  echo(origin = origin);
+  tallstud    = [studw, studh, tallstudl];
+  shortstudl  = doorroughopenh+headerboardh;
+  joistboard  = b2x6;
+  joist       = [joistboard[0], floory, joistboard[1]];
+  translate(origin) { color(color) {
+    cubenspeak("joist", joist,  [c+studwalk  +studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*2-studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*3-studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*4-studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*5-studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*6-studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*6+studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*7+studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*8+studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*9+studw,  0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*10+studw, 0, 0]);
+    cubenspeak("joist", joist,  [c+studwalk*11-studw, 0, 0]);
+  }}
+}
+
+
+
 colors = [
   "#f29e4c",
   "#f1c453",
@@ -388,3 +409,4 @@ northwall  (colors[5]);
 southwall  (colors[7]);
 eastwall   (colors[6]);
 westwall   (colors[8]);
+loft       (colors[9]);
