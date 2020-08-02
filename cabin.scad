@@ -23,10 +23,18 @@ b6x6  = [5.5, 5.5];
 // TOOLS
 function ft(feet = 0, inches = 0) = 12*feet + inches;
 module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
+  //echo(name, cuboid, transtep);
   translate(transtep) {
     cube(cuboid);
   }
-  echo(name, cuboid, transtep);
+}
+module polyspeak(name, points, index, transtep = [0,0,0]) {
+  echo(points); //for (p = points) echo(points[i]);
+  echo(index);  //for (p = index)  echo(index[i]);
+  echo(transtep);
+  translate(transtep) {
+    polyhedron(points, index, 10);
+  }
 }
 module ALERT(message = "!!  !!  !!  !!") {
   echo(message);
@@ -168,7 +176,7 @@ studwalk         = 16;
 doorroughopenw   = 38.25;
 doorroughopenh   = 82;
 windowroughopenw = 24;
-windowroughopenh = 39;
+windowroughopenh = 36;
 headerboard      = b4x6;
 headerboardw     = headerboard[0];
 headerboardh     = headerboard[1];
@@ -402,6 +410,33 @@ module loft(color) {
   }}
 }
 
+gableelv  = studelev + tallstudl + studw;
+
+// G A B L E
+module gable(color, name) {
+  echo();
+  echo(name);
+  origin = [0, 0, gableelv+studw];
+  echo(origin = origin);
+  soleplate = [studh, floory, studw];
+  ppp = [[0,-6,0], [0,-6,160], [160,-6,160], [160,-6,0]];
+  iii = [[0,1,2,3]];
+  translate(origin) { color(color) {
+    cubenspeak("soleplate",   soleplate,   [0, 0,                    -studw]);
+    polyspeak("POLYGON TEST", ppp, iii, [0,0,0]);
+  }}
+}
+
+// E A S T   G A B L E
+module eastgable(color) {
+  gable(color, "EAST GABLE");
+}
+// W E S T   G A B L E
+module westgable(color) {
+  translate([floorx-studh, 0, 0]) {
+    gable(color, "WEST GABLE");
+  }
+}
 
 
 colors = [
@@ -428,3 +463,5 @@ southwall  (colors[7]);
 eastwall   (colors[6]);
 westwall   (colors[8]);
 loft       (colors[9]);
+eastgable  (colors[6]);
+westgable  (colors[8]);
