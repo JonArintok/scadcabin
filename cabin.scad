@@ -76,7 +76,7 @@ module floorbeams(color) {
   origin = [0,0,0];
   echo(origin = origin);
   floorbeamlboard = b6x6;
-  floorbeamsboard = b6x6;
+  floorbeamsboard = b4x6;
   floorbeamlboardw = floorbeamlboard[0];
   floorbeamlboardh = floorbeamlboard[1];
   floorbeamsboardw = floorbeamsboard[0];
@@ -109,44 +109,50 @@ module dirtceiling(color) {
 
 // F L O O R   J O I S T S
 floorjoistelev = dirtceilingelev + dirtceilingrise;
-floorjoistrise = b4x6[1];
+floorjoistrise = b2x8[1];
 module floorjoists(color) {
   echo();
   echo("FLOOR JOISTS");
   origin = [0, 0, floorjoistelev];
   echo(origin = origin);
-  beamboard  = b4x6;
-  joistboard = b2x6;
-  capboard   = b4x6;
-  beamw  = beamboard[0];
-  beamh  = beamboard[1];
-  joistw = joistboard[0];
-  joisth = joistboard[1];
-  capw   = capboard[0];
-  caph   = capboard[1];
-  beam  = [beamw, floory, beamh];
-  joist = [joistw, floory-capw*2, joisth];
-  cap   = [floorx-beamw*2, beamw, beamh];
-  studwalk = 16;
+  joistboard = b2x8;
+  beamboard  = b2x8;
+  capboard   = b2x8;
+  joistw     = joistboard[0];
+  joisth     = joistboard[1];
+  beamw      = beamboard[0];
+  beamh      = beamboard[1];
+  capw       = capboard[0];
+  caph       = capboard[1];
+  joist      = [joistw, floory-capw*4, joisth];
+  beamin     = [beamw, floory-beamw*2, beamh];
+  beamout    = [beamw, floory, beamh];
+  capin      = [floorx-beamw*4, capw, caph];
+  capout     = [floorx-beamw*2, capw, caph];
+  studwalk   = 16;
   translate(origin) { color(color) {
-    cubenspeak("beam",  beam);
-    cubenspeak("beam",  beam,  [floorx-beamw,      0,    0]);
-    cubenspeak("joist", joist, [studwalk,          capw, 0]);
-    cubenspeak("joist", joist, [studwalk*2,        capw, 0]);
-    cubenspeak("joist", joist, [studwalk*3-joistw, capw, 0]);
-    cubenspeak("joist", joist, [studwalk*3,        capw, 0]);
-    cubenspeak("joist", joist, [studwalk*4,        capw, 0]);
-    cubenspeak("joist", joist, [studwalk*5,        capw, 0]);
-    cubenspeak("joist", joist, [studwalk*6-joistw, capw, 0]);
-    cubenspeak("joist", joist, [studwalk*6,        capw, 0]);
-    cubenspeak("joist", joist, [studwalk*7,        capw, 0]);
-    cubenspeak("joist", joist, [studwalk*8,        capw, 0]);
-    cubenspeak("joist", joist, [studwalk*9-joistw, capw, 0]);
-    cubenspeak("joist", joist, [studwalk*9,        capw, 0]);
-    cubenspeak("joist", joist, [studwalk*10,       capw, 0]);
-    cubenspeak("joist", joist, [studwalk*11,       capw, 0]);
-    cubenspeak("cap", cap,  [beamw, 0,           0]);
-    cubenspeak("cap", cap,  [beamw, floory-capw, 0]);
+    cubenspeak("beam",  beamout);
+    cubenspeak("beam",  beamin,  [beamw,             capw,          0]);
+    cubenspeak("joist", joist,   [studwalk,          capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*2,        capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*3-joistw, capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*3,        capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*4,        capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*5,        capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*6-joistw, capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*6,        capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*7,        capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*8,        capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*9-joistw, capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*9,        capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*10,       capw*2,        0]);
+    cubenspeak("joist", joist,   [studwalk*11,       capw*2,        0]);
+    cubenspeak("beam",  beamin,  [floorx-beamw*2,    capw,          0]);
+    cubenspeak("beam",  beamout, [floorx-beamw,      0,             0]);
+    cubenspeak("cap", capout,    [beamw,             0,             0]);
+    cubenspeak("cap", capin,     [beamw*2,           capw,          0]);
+    cubenspeak("cap", capin,     [beamw*2,           floory-capw*2, 0]);
+    cubenspeak("cap", capout,    [beamw,             floory-capw,   0]);
   }}
 }
 
@@ -215,7 +221,9 @@ module northwall(color) {
   translate(origin) { color(color) {
     cubenspeak("soleplate",    soleplate,    [0,                  0, -studw]);
     cubenspeak("cornerstud",   cornerstud);
+    cubenspeak("shortstud",    shortstud,    [cornerstudw,   0, 0]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk,           0, 0]);
+    cubenspeak("shortstud",    shortstud,    [c+studwalk+studw,   0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk*2-studw,   0, 0]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk*2,         0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk*2+studw,   0, 0]);
@@ -380,7 +388,7 @@ module loft(color) {
   echo(origin = origin);
   tallstud    = [studw, studh, tallstudl];
   shortstudl  = doorroughopenh+headerboardh;
-  joistboard  = b2x6;
+  joistboard  = b2x8;
   joistw      = joistboard[0];
   joisth      = joistboard[1];
   joist       = [joistw, floory, joisth];
@@ -389,9 +397,8 @@ module loft(color) {
   shortjoisty = studwalk*2+studh+s;
   crossjoist  = [studwalk*2-joistw*2-c, joistw, joisth];
   translate(origin) { color(color) {
-    cubenspeak("shortjoist", shortjoist,  [studh,                 shortjoisty,        0]);
-    cubenspeak("shortjoist", shortjoist,  [c+studwalk  +studw,    shortjoisty,        0]);
-    cubenspeak("crossjoist", crossjoist,  [0,                     shortjoisty-joistw, 0]);
+    cubenspeak("joist",      joist,  [studh,                 ,        0]);
+    cubenspeak("joist",      joist,  [c+studwalk  +studw,    ,        0]);
     cubenspeak("joist",      joist,       [c+studwalk*2-studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*2+studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*3-studw,    0,                  0]);
@@ -423,7 +430,7 @@ module gable(color, name) {
   iii = [[0,1,2,3]];
   translate(origin) { color(color) {
     cubenspeak("soleplate",   soleplate,   [0, 0,                    -studw]);
-    polyspeak("POLYGON TEST", ppp, iii, [0,0,0]);
+    //polyspeak("POLYGON TEST", ppp, iii, [0,0,0]);
   }}
 }
 
@@ -455,7 +462,7 @@ colors = [
 // D R A W
 piers      (colors[0]);
 floorbeams (colors[1]);
-dirtceiling(colors[4]);
+dirtceiling(colors[8]);
 floorjoists(colors[3]);
 subfloor   (colors[2]);
 northwall  (colors[5]);
@@ -463,5 +470,5 @@ southwall  (colors[7]);
 eastwall   (colors[6]);
 westwall   (colors[8]);
 loft       (colors[9]);
-eastgable  (colors[6]);
-westgable  (colors[8]);
+*eastgable  (colors[6]);
+*westgable  (colors[8]);
