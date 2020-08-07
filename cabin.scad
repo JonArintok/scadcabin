@@ -219,11 +219,11 @@ module northwall(color) {
   headerx         = studwalk*8 + studw;
   header          = [studwalk*3 - studw, headerboardw, headerboardh];
   translate(origin) { color(color) {
-    cubenspeak("soleplate",    soleplate,    [0,                  0, -studw]);
+    cubenspeak("soleplate",    soleplate,    [0,                    0, -studw]);
     cubenspeak("cornerstud",   cornerstud);
-    cubenspeak("shortstud",    shortstud,    [cornerstudw,   0, 0]);
+    cubenspeak("shortstud",    shortstud,    [cornerstudw,          0, 0]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk,           0, 0]);
-    cubenspeak("shortstud",    shortstud,    [c+studwalk+studw,   0, 0]);
+    cubenspeak("shortstud",    shortstud,    [c+studwalk+studw,     0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk*2-studw,   0, 0]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk*2,         0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk*2+studw,   0, 0]);
@@ -396,6 +396,7 @@ module loft(color) {
   shortjoist  = [joistboard[0], floory-studwalk*2-s-studh, joistboard[1]];
   shortjoisty = studwalk*2+studh+s;
   crossjoist  = [studwalk*2-joistw*2-c, joistw, joisth];
+  echo(str("ladder hole: ", crossjoist[0]-studw, " by ", shortjoisty-studw));
   translate(origin) { color(color) {
     cubenspeak("joist",      joist,  [studh,                 ,        0]);
     cubenspeak("joist",      joist,  [c+studwalk  +studw,    ,        0]);
@@ -470,5 +471,9 @@ southwall  (colors[7]);
 eastwall   (colors[6]);
 westwall   (colors[8]);
 loft       (colors[9]);
-*eastgable  (colors[6]);
-*westgable  (colors[8]);
+eastgable  (colors[6]);
+westgable  (colors[8]);
+
+echo("");
+echo(str("floor: ", floorx-studh*2, " by ", floory-studh*2));
+echo(str("lower headroom: ", shortstudl+studw));
