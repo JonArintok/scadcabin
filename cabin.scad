@@ -23,7 +23,7 @@ b6x6  = [5.5, 5.5];
 // TOOLS
 function ft(feet = 0, inches = 0) = 12*feet + inches;
 module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
-  //echo(name, cuboid, transtep);
+  echo(name, cuboid, transtep);
   translate(transtep) {
     cube(cuboid);
   }
@@ -224,11 +224,11 @@ module northwall(color) {
     cubenspeak("shortstud",    shortstud,    [cornerstudw,          0, 0]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk,           0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk+studw,     0, 0]);
-    cubenspeak("shortstud",    shortstud,    [c+studwalk*2-studw,   0, 0]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk*2,         0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk*2+studw,   0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk*3-studw,   0, 0]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk*3,         0, 0]);
+    cubenspeak("shortstud",    shortstud,    [c+studwalk*3+studw,   0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk*4-studw,   0, 0]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk*4,         0, 0]);
     cubenspeak("shortstud",    shortstud,    [c+studwalk*5-studw,   0, 0]);
@@ -288,11 +288,11 @@ module southwall(color) {
     cubenspeak("sill",        sill,        [c+lsillx,                 0, sillz]);
     cubenspeak("header",      header,      [c+studwalk + studw,       0, headerz]);
     cubenspeak("dropstud",    dropstud,    [c+studwalk + studw,       0, shortstudl-windowdrop]);
-    cubenspeak("dropstud",    dropstud,    [c+studwalk*2-studw,       0, shortstudl-windowdrop]);
     cubenspeak("highcripple", highcripple, [c+studwalk*2,             0, shortstudl-windowdrop]);
     cubenspeak("dropstud",    dropstud,    [c+studwalk*2+studw,       0, shortstudl-windowdrop]);
     cubenspeak("dropstud",    dropstud,    [c+studwalk*3-studw,       0, shortstudl-windowdrop]);
     cubenspeak("tallstud",    tallstud,    [c+studwalk*3,             0, 0]);
+    cubenspeak("shortstud",   shortstud,   [c+studwalk*3+studw,       0, 0]);
     cubenspeak("shortstud",   shortstud,   [c+studwalk*4-studw,       0, 0]);
     cubenspeak("tallstud",    tallstud,    [c+studwalk*4,             0, 0]);
     cubenspeak("shortstud",   shortstud,   [c+studwalk*5-studw,       0, 0]);
@@ -304,6 +304,7 @@ module southwall(color) {
     cubenspeak("shortstud",   shortstud,   [c+studwalk*7+studw,       0, 0]);
     cubenspeak("tallstud",    tallstud,    [c+studwalk*8,             0, 0]);
     cubenspeak("shortstud",   shortstud,   [c+studwalk*8+studw,       0, 0]);
+    cubenspeak("shortstud",   shortstud,   [c+studwalk*9-studw,       0, 0]);
     cubenspeak("tallstud",    tallstud,    [c+studwalk*9,             0, 0]);
     cubenspeak("trimmer",     trimmer,     [c+studwalk*9+studw,       0, 0]);
     cubenspeak("lowcripple",  lowcripple,  [c+rsillx,                 0, 0]);
@@ -316,7 +317,6 @@ module southwall(color) {
     cubenspeak("dropstud",    dropstud,    [c+studwalk*9+studw,       0, shortstudl-windowdrop]);
     cubenspeak("dropstud",    dropstud,    [c+studwalk*10-studw,      0, shortstudl-windowdrop]);
     cubenspeak("highcripple", highcripple, [c+studwalk*10,            0, shortstudl-windowdrop]);
-    cubenspeak("dropstud",    dropstud,    [c+studwalk*10+studw,      0, shortstudl-windowdrop]);
     cubenspeak("dropstud",    dropstud,    [c+studwalk*11-studw,      0, shortstudl-windowdrop]);
     cubenspeak("tallstud",    tallstud,    [c+studwalk*11,            0, 0]);
     cubenspeak("shortstud",   shortstud,   [floorx-cornerstudw-studw, 0, 0]);
@@ -395,24 +395,24 @@ module loft(color) {
   s           = 6.5; // see "smallwall"
   shortjoist  = [joistboard[0], floory-studwalk*2-s-studh, joistboard[1]];
   shortjoisty = studwalk*2+studh+s;
-  crossjoist  = [studwalk*2-joistw*2-c, joistw, joisth];
+  crossjoist  = [studwalk*3-joistw*2-c, joistw, joisth];
   echo(str("ladder hole: ", crossjoist[0]-studw, " by ", shortjoisty-studw));
   translate(origin) { color(color) {
-    cubenspeak("joist",      joist,  [studh,                 ,        0]);
-    cubenspeak("joist",      joist,  [c+studwalk  +studw,    ,        0]);
-    cubenspeak("joist",      joist,       [c+studwalk*2-studw,    0,                  0]);
+    cubenspeak("joist",      joist,       [studh,                 0,                  0]);
+    cubenspeak("joist",      joist,       [c+studwalk  +studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*2+studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*3-studw,    0,                  0]);
+    cubenspeak("joist",      joist,       [c+studwalk*3+studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*4-studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*5-studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*6-studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*6+studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*7+studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*8+studw,    0,                  0]);
+    cubenspeak("joist",      joist,       [c+studwalk*9-studw,    0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk*9+studw,    0,                  0]);
-    cubenspeak("joist",      joist,       [c+studwalk*10-studw,   0,                  0]);
-    cubenspeak("joist",      joist,       [c+studwalk*10+studw,   0,                  0]);
-    cubenspeak("crossjoist", crossjoist,  [c+studwalk*10+studw*2, shortjoisty-joistw, 0]);
+    cubenspeak("shortjoist", shortjoist,  [c+studwalk*10-studw,   shortjoisty,        0]);
+    cubenspeak("crossjoist", crossjoist,  [c+studwalk*9+studw*2,  shortjoisty-joistw, 0]);
     cubenspeak("shortjoist", shortjoist,  [floorx-studh-studw,    shortjoisty,        0]);
     cubenspeak("shortjoist", shortjoist,  [c+studwalk*11-studw,   shortjoisty,        0]);
   }}
