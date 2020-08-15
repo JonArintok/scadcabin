@@ -29,8 +29,8 @@ module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
   }
 }
 module polyspeak(name, points, index, transtep = [0,0,0]) {
-  echo(points); //for (p = points) echo(points[i]);
-  echo(index);  //for (p = index)  echo(index[i]);
+  echo(points);
+  echo(index);
   echo(transtep);
   translate(transtep) {
     polyhedron(points, index, 10);
@@ -418,7 +418,9 @@ module loft(color) {
   }}
 }
 
-gableelv  = studelev + tallstudl + studw;
+gableelv         = studelev + tallstudl + studw;
+ridgeboardboard  = b1x8;
+braceplateboard  = studboard;
 
 // G A B L E
 module gable(color, name) {
@@ -427,12 +429,31 @@ module gable(color, name) {
   origin = [0, 0, gableelv+studw];
   echo(origin = origin);
   soleplate = [studh, floory, studw];
-  ppp = [[0,-6,0], [0,-6,160], [160,-6,160], [160,-6,0]];
-  iii = [[0,1,2,3]];
-  translate(origin) { color(color) {
-    cubenspeak("soleplate",   soleplate,   [0, 0,                    -studw]);
-    //polyspeak("POLYGON TEST", ppp, iii, [0,0,0]);
-  }}
+  ridgeboardw      = ridgeboardboard[0];
+  braceplateboardw = braceplateboard[0];
+  braceplateboardh = braceplateboard[1];
+  braceplatelegl   = floory/2-ridgeboardw/2;
+  braceplateendw   = sqrt(2*braceplateboardw*braceplateboardw);
+  braceplateside = [
+  /* 0 */ [0,braceplatelegl,braceplatelegl],
+  /* 1 */ [0,braceplatelegl,braceplatelegl-braceplateendw],
+  /*   2, 3*/           [0,braceplateendw,0], [0,0,0]
+  ];
+  braceplate = [
+    braceplateside[0],braceplateside[1],braceplateside[2],braceplateside[3],
+    [studh, braceplateside[0][1], braceplateside[0][2]],
+    [studh, braceplateside[1][1], braceplateside[1][2]],
+    [studh, braceplateside[2][1], braceplateside[2][2]],
+    [studh, braceplateside[3][1], braceplateside[3][2]]
+  ];
+  iii = [[0,1,2,3],[4,5,6,7],[0,4,7,3],[1,5,6,2],[0,4,5,1],[2,6,7,3]];
+  translate(origin) { //color(color) {
+    cubenspeak("soleplate",   soleplate,   [0, 0, -studw]);
+    polyspeak("braceplate", braceplate, iii, [0,0,0]);
+    translate([studh,floory,0]) { rotate([0,0,180]) {
+      polyspeak("braceplate", braceplate, iii, [0,0,0]);
+    }}
+  }//}
 }
 
 // E A S T   G A B L E
@@ -443,6 +464,23 @@ module eastgable(color) {
 module westgable(color) {
   translate([floorx-studh, 0, 0]) {
     gable(color, "WEST GABLE");
+  }
+}
+
+module ridgeboard(color) {
+  echo();
+  echo("ridgeboard");
+  origin = [0, 0, gableelv+studw];
+  echo(origin = origin);
+  ridgeboardw      = ridgeboardboard[0];
+  ridgeboardh      = ridgeboardboard[1];
+  ridgeboardext    = 12;
+  ridgeboardl      = floorx + ridgeboardext*2;
+  ridgeboard       = [ridgeboardl, ridgeboardw, ridgeboardh];
+  ridgeboardy      = floory/2 - ridgeboardw/2;
+  ridgeboardz      = floory/2 - ridgeboardw/2 - ridgeboardh;
+  translate(origin) {
+    cubenspeak("ridgeboard",   ridgeboard,   [-ridgeboardext, ridgeboardy, ridgeboardz]);
   }
 }
 
@@ -473,6 +511,7 @@ westwall   (colors[8]);
 loft       (colors[9]);
 eastgable  (colors[6]);
 westgable  (colors[8]);
+ridgeboard (colors[8]);
 
 echo("");
 echo(str("floor: ", floorx-studh*2, " by ", floory-studh*2));
