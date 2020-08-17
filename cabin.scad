@@ -107,6 +107,14 @@ module dirtceiling(color) {
   }}
 }
 
+joistboard = b2x8;
+joistw     = joistboard[0];
+joisth     = joistboard[1];
+studboard  = b2x4;
+studw      = studboard[0];
+studh      = studboard[1];
+studwalk   = 16;
+
 // F L O O R   J O I S T S
 floorjoistelev = dirtceilingelev + dirtceilingrise;
 floorjoistrise = b2x8[1];
@@ -115,11 +123,8 @@ module floorjoists(color) {
   echo("FLOOR JOISTS");
   origin = [0, 0, floorjoistelev];
   echo(origin = origin);
-  joistboard = b2x8;
   beamboard  = b2x8;
   capboard   = b2x8;
-  joistw     = joistboard[0];
-  joisth     = joistboard[1];
   beamw      = beamboard[0];
   beamh      = beamboard[1];
   capw       = capboard[0];
@@ -173,27 +178,27 @@ module subfloor(color) {
   }}
 }
 
-wallelev         = subfloorelev + subfloorrise;
-tallstudl        = ft(12);
-studboard        = b2x4;
-studw            = studboard[0];
-studh            = studboard[1];
-studwalk         = 16;
-doorroughopenw   = 38.25;
-doorroughopenh   = 82;
-windowroughopenw = 24;
-windowroughopenh = 36;
-headerboard      = b4x6;
-headerboardw     = headerboard[0];
-headerboardh     = headerboard[1];
-c                = -studw/2; // for centering north and south walls
-windowdrop       = 8;
-shortstudl       = doorroughopenh + headerboardh;
-headerz          = shortstudl - headerboardh - windowdrop;
-sillz            = headerz - windowroughopenh - studw - windowdrop;
-lsillx           = studwalk*3 - studw - windowroughopenw; // on south wall
-studelev         = wallelev + studw;
-intsheatht       = 0.5;
+wallelev          = subfloorelev + subfloorrise;
+tallstudl         = ft(12);
+doorroughopenw    = 38.25;
+doorroughopenh    = 82;
+lwindowroughopenw = 24;
+lwindowroughopenh = 36;
+uwindowroughopenw = 32;
+uwindowroughopenh = 16;
+headerboard       = b4x6;
+headerboardw      = headerboard[0];
+headerboardh      = headerboard[1];
+c                 = -studw/2; // for centering north and south walls
+windowdrop        = 8;
+shortstudl        = doorroughopenh + headerboardh;
+headerz           = shortstudl - headerboardh - windowdrop;
+sillz             = headerz - lwindowroughopenh - studw - windowdrop;
+lsillx            = studwalk*3 - studw - lwindowroughopenw; // on south wall
+silly             = studwalk*4+studw*2;
+s                 = floory-silly-lwindowroughopenw-lsillx; // shift
+studelev          = wallelev + studw;
+intsheatht        = 0.5;
 
 // N O R T H   W A L L
 module northwall(color) {
@@ -202,7 +207,8 @@ module northwall(color) {
   origin = [0, 0, studelev];
   echo(origin = origin);
   soleplate       = [floorx, studh, studw];
-  topplate        = [floorx, studh, studw];
+  topplate0       = [floorx, studh, studw];
+  topplate1       = [floorx-studh*2, studh, studw];
   cornerstudboard = b4x4;
   cornerstud      = [cornerstudboard[0], cornerstudboard[1], tallstudl];
   cornerstudw     = cornerstudboard[0];
@@ -246,8 +252,9 @@ module northwall(color) {
     cubenspeak("cripple",      cripple,      [c+studwalk*9,         0, shortstudl]);
     cubenspeak("cripple",      cripple,      [c+studwalk*10,        0, shortstudl]);
     cubenspeak("tallstud",     tallstud,     [c+studwalk*11,        0, 0]);
-    cubenspeak("cornerstud",   cornerstud,   [floorx-cornerstudw, 0, 0]);
-    cubenspeak("topplate",     topplate,     [0,                  0, tallstudl]);
+    cubenspeak("cornerstud",   cornerstud,   [floorx-cornerstudw,   0, 0]);
+    cubenspeak("topplate0",    topplate0,    [0,                    0, tallstudl]);
+    cubenspeak("topplate0",    topplate1,    [studh,                0, tallstudl+studw]);
   }}
 }
 
@@ -269,11 +276,11 @@ module southwall(color) {
   highcripple     = [studw, studh, tallstudl-shortstudl+windowdrop];
   lheaderx        = studwalk + studw;
   header          = [studwalk*2 - studw, headerboardw, headerboardh];
-  sill            = [windowroughopenw, studh, studw];
+  sill            = [lwindowroughopenw, studh, studw];
   rsillx          = studwalk*9+studw*2;
   lowcripple      = [studw, studh, sillz];
-  lwindowastudx   = studwalk*3 - studw*2 - windowroughopenw;
-  rwindowastudx   = studwalk*9 + studw*2 + windowroughopenw;
+  lwindowastudx   = studwalk*3 - studw*2 - lwindowroughopenw;
+  rwindowastudx   = studwalk*9 + studw*2 + lwindowroughopenw;
   translate(origin) { color(color) {
     cubenspeak("soleplate",   soleplate,   [0,                        0, -studw]);
     cubenspeak("cornerstud",  cornerstud);
@@ -342,24 +349,24 @@ module smallwall(color, name) {
   shortstud   = [studh, studw, shortstudl];
   studwalk    = 16;
   header      = [headerboardw, studwalk*2 - studw, headerboardh];
-  sill        = [studh, windowroughopenw, studw];
-  silly       = studwalk*4+studw*2;
-  s           = floory-silly-windowroughopenw-lsillx; // shift
+  sill        = [studh, lwindowroughopenw, studw];
   echo(s=s);
   translate(origin) { color(color) {
     cubenspeak("soleplate",   soleplate,   [0, 0,                    -studw]);
     cubenspeak("tallstud",    tallstud,    [0, 0,                    0]);
     cubenspeak("tallstud",    tallstud,    [0, s,                    0]);
     cubenspeak("tallstud",    tallstud,    [0, s+studwalk,           0]);
-    cubenspeak("shortstud",   shortstud,   [0, s+studwalk*2-studw,   0]);
+    if (name == "WEST WALL") {
+      cubenspeak("shortstud",   shortstud,   [0, s+studwalk*2-studw,   0]);
+    }
     cubenspeak("tallstud",    tallstud,    [0, s+studwalk*2,         0]);
     cubenspeak("tallstud",    tallstud,    [0, s+studwalk*3,         0]);
     cubenspeak("tallstud",    tallstud,    [0, s+studwalk*4,         0]);
     cubenspeak("trimmer",     trimmer,     [0, s+studwalk*4+studw,   0]);
     cubenspeak("lowcripple",  lowcripple,  [0, s+studwalk*4+studw*2, 0]);
     cubenspeak("lowcripple",  lowcripple,  [0, s+studwalk*5,         0]);
-    cubenspeak("lowcripple",  lowcripple,  [0, s+studwalk*4+windowroughopenw+studw,   0]);
-    cubenspeak("trimmer",     trimmer,     [0, s+studwalk*4+windowroughopenw+studw*2, 0]);
+    cubenspeak("lowcripple",  lowcripple,  [0, s+studwalk*4+lwindowroughopenw+studw,   0]);
+    cubenspeak("trimmer",     trimmer,     [0, s+studwalk*4+lwindowroughopenw+studw*2, 0]);
     cubenspeak("trimmer",     trimmer,     [0, s+studwalk*6-studw,   0]);
     cubenspeak("sill",        sill,        [0, s+silly,              sillz]);
     cubenspeak("header",      header,      [0, s+studwalk*4+studw,   headerz]);
@@ -388,7 +395,6 @@ module loft(color) {
   echo(origin = origin);
   tallstud    = [studw, studh, tallstudl];
   shortstudl  = doorroughopenh+headerboardh;
-  joistboard  = b2x8;
   joistw      = joistboard[0];
   joisth      = joistboard[1];
   joist       = [joistw, floory, joisth];
@@ -396,7 +402,6 @@ module loft(color) {
   shortjoist  = [joistboard[0], floory-studwalk*2-s-studh, joistboard[1]];
   shortjoisty = studwalk*2+studh+s;
   crossjoist  = [studwalk*3-joistw*2-c, joistw, joisth];
-  echo(str("ladder hole: ", crossjoist[0]-studw, " by ", shortjoisty-studw));
   translate(origin) { color(color) {
     cubenspeak("joist",      joist,       [studh,                 0,                  0]);
     cubenspeak("joist",      joist,       [c+studwalk  +studw,    0,                  0]);
@@ -421,6 +426,9 @@ module loft(color) {
 gableelv         = studelev + tallstudl + studw;
 ridgeboardboard  = b1x8;
 braceplateboard  = studboard;
+braceplateboardw = braceplateboard[0];
+braceplateboardh = braceplateboard[1];
+braceplateendw   = sqrt(2*braceplateboardw*braceplateboardw);
 
 // G A B L E
 module gable(color, name) {
@@ -430,10 +438,7 @@ module gable(color, name) {
   echo(origin = origin);
   soleplate = [studh, floory, studw];
   ridgeboardw      = ridgeboardboard[0];
-  braceplateboardw = braceplateboard[0];
-  braceplateboardh = braceplateboard[1];
-  braceplatelegl   = floory/2-ridgeboardw/2;
-  braceplateendw   = sqrt(2*braceplateboardw*braceplateboardw);
+  braceplatelegl   = floory/2 - ridgeboardw/2 - studh;
   braceplateside = [
   /* 0 */ [0,braceplatelegl,braceplatelegl],
   /* 1 */ [0,braceplatelegl,braceplatelegl-braceplateendw],
@@ -447,13 +452,13 @@ module gable(color, name) {
     [studh, braceplateside[3][1], braceplateside[3][2]]
   ];
   iii = [[0,1,2,3],[4,5,6,7],[0,4,7,3],[1,5,6,2],[0,4,5,1],[2,6,7,3]];
-  translate(origin) { //color(color) {
+  translate(origin) { color(color) {
     cubenspeak("soleplate",   soleplate,   [0, 0, -studw]);
-    polyspeak("braceplate", braceplate, iii, [0,0,0]);
+    polyspeak("braceplate", braceplate, iii, [0,studh,0]);
     translate([studh,floory,0]) { rotate([0,0,180]) {
-      polyspeak("braceplate", braceplate, iii, [0,0,0]);
+      polyspeak("braceplate", braceplate, iii, [0,studh,0]);
     }}
-  }//}
+  }}
 }
 
 // E A S T   G A B L E
@@ -478,10 +483,10 @@ module ridgeboard(color) {
   ridgeboardl      = floorx + ridgeboardext*2;
   ridgeboard       = [ridgeboardl, ridgeboardw, ridgeboardh];
   ridgeboardy      = floory/2 - ridgeboardw/2;
-  ridgeboardz      = floory/2 - ridgeboardw/2 - ridgeboardh;
-  translate(origin) {
+  ridgeboardz      = floory/2 - ridgeboardw/2 - studh - braceplateendw;
+  translate(origin) { color(color) {
     cubenspeak("ridgeboard",   ridgeboard,   [-ridgeboardext, ridgeboardy, ridgeboardz]);
-  }
+  }}
 }
 
 
@@ -511,8 +516,33 @@ westwall   (colors[8]);
 loft       (colors[9]);
 eastgable  (colors[6]);
 westgable  (colors[8]);
-ridgeboard (colors[8]);
+ridgeboard (colors[1]);
+
+lowerfloordim     = [floorx-studh, floory-studh];
+upperfloorportdim = [studwalk*3-joistw*2-c-studw, studwalk*2+studh+s-studw];
+lowerfloorarea    = lowerfloordim[0]*lowerfloordim[1];
+upperfloorarea    = lowerfloorarea - upperfloorportdim[0]*upperfloorportdim[1];
+totalfloorarea    = lowerfloorarea + upperfloorarea;
+lowerheadroom     = shortstudl+studw;
+floorthicknes     = 1;
+upperwallheight   = tallstudl - shortstudl - joisth - floorthicknes;
+upperheadroom     = upperwallheight + lowerfloordim[1]/2;
+windowarea        = lwindowroughopenw*lwindowroughopenh*4 + uwindowroughopenw*uwindowroughopenh*2;
+doorarea          = doorroughopenw*doorroughopenh;
+totalintwallarea  = lowerfloordim[0]*tallstudl*2 + lowerfloordim[1]*tallstudl*2 + (lowerfloordim[1]*lowerfloordim[1])/2 - windowarea - doorarea;
+totalsidingarea   = floorx*tallstudl*2 + floory*tallstudl*2 + (floory*floory)/2 - windowarea - doorarea;
+totalroofarea     = 0;
 
 echo("");
-echo(str("floor: ", floorx-studh*2, " by ", floory-studh*2));
-echo(str("lower headroom: ", shortstudl+studw));
+echo(str("lower floor space: ", lowerfloordim[0], " by ", lowerfloordim[1]));
+echo(str("port size        : ", upperfloorportdim[0], " by ", upperfloorportdim[1]));
+echo(str("lowerfloorarea   : ", lowerfloorarea, " in2, or ", lowerfloorarea/144, " ft2"));
+echo(str("upperfloorarea   : ", upperfloorarea, " in2, or ", upperfloorarea/144, " ft2"));
+echo(str("totalfloorarea   : ", totalfloorarea, " in2, or ", totalfloorarea/144, " ft2"));
+echo(str("lowerheadroom    : ", lowerheadroom, " in, or ", lowerheadroom/12, " ft"));
+echo(str("floorthicknes    : ", floorthicknes, " in"));
+echo(str("upperwallheight  : ", upperwallheight, " in, or ", upperwallheight/12, " ft"));
+echo(str("upperheadroom    : ", upperheadroom, " in, or ", upperheadroom/12, " ft"));
+echo(str("totalintwallarea : ", totalintwallarea, " in2, or ", totalintwallarea/144, " ft2"));
+echo(str("totalsidingarea  : ", totalsidingarea, " in2, or ", totalsidingarea/144, " ft2"));
+echo(str("totalroofarea    : ", totalroofarea, " in2, or ", totalroofarea/144, " ft2"));
