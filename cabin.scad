@@ -23,15 +23,15 @@ b6x6  = [5.5, 5.5];
 // TOOLS
 function ft(feet = 0, inches = 0) = 12*feet + inches;
 module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
-  echo(name, cuboid, transtep);
+  //echo(name, cuboid, transtep);
   translate(transtep) {
     cube(cuboid);
   }
 }
 module polyspeak(name, points, index, transtep = [0,0,0]) {
-  echo(points);
-  echo(index);
-  echo(transtep);
+  //echo(points);
+  //echo(index);
+  //echo(transtep);
   translate(transtep) {
     polyhedron(points, index, 10);
   }
@@ -199,6 +199,8 @@ silly             = studwalk*4+studw*2;
 s                 = floory-silly-lwindowroughopenw-lsillx; // shift
 studelev          = wallelev + studw;
 intsheatht        = 0.5;
+upperfloorportdim = [studwalk*3-joistw*2-c-studw, studwalk*2+studh+s-studw];
+
 
 // N O R T H   W A L L
 module northwall(color) {
@@ -265,7 +267,8 @@ module southwall(color) {
   origin = [0, floory-studh, studelev];
   echo(origin = origin);
   soleplate       = [floorx, studh, studw];
-  topplate        = [floorx, studh, studw];
+  topplate0       = [floorx, studh, studw];
+  topplate1       = [floorx-studh*2, studh, studw];
   cornerstudboard = b4x4;
   cornerstud      = [cornerstudboard[0], cornerstudboard[1], tallstudl];
   cornerstudw     = cornerstudboard[0];
@@ -328,7 +331,8 @@ module southwall(color) {
     cubenspeak("tallstud",    tallstud,    [c+studwalk*11,            0, 0]);
     cubenspeak("shortstud",   shortstud,   [floorx-cornerstudw-studw, 0, 0]);
     cubenspeak("cornerstud",  cornerstud,  [floorx-cornerstudw,       0, 0]);
-    cubenspeak("topplate",    topplate,    [0,                        0, tallstudl]);
+    cubenspeak("topplate0",   topplate0,   [0,                        0, tallstudl]);
+    cubenspeak("topplate0",   topplate1,   [studh,                    0, tallstudl+studw]);
   }}
 }
 
@@ -423,12 +427,60 @@ module loft(color) {
   }}
 }
 
+wallpanelthickness = 1/2;
+floorthickness     = 1/2;
+
+// L A D D E R
+module ladder(color) {
+  echo();
+  echo("LADDER");
+  origin = [0, 0, subfloorelev+subfloorrise+floorthickness];
+  echo(origin = origin);
+  legboard  = b2x4;
+  legboardw = legboard[0];
+  legboardh = legboard[1];
+  legheight = ft(13);
+  rungboard  = b2x4;
+  rungboardw = rungboard[0];
+  rungboardh = rungboard[1];
+  rungl      = ft(2);
+  leg = [legboardh, legboardw, legheight];
+  legx = floorx - studh - legboardh - wallpanelthickness;
+  legyl = upperfloorportdim[1] - legboardw;
+  legyr = upperfloorportdim[1] - rungl;
+  rung = [rungboardw, rungl, rungboardh];
+  rungx = legx - rungboardw;
+  rungy = legyr;
+  rungwalk = 12;
+  translate(origin) { color(color) {
+    cubenspeak("leg",  leg,   [legx,  legyl, 0]);
+    cubenspeak("leg",  leg,   [legx,  legyr, 0]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk  -rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*2-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*3-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*4-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*5-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*6-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*7-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*8-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*9-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*10-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*11-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*12-rungboardh]);
+    cubenspeak("rung", rung,  [rungx, rungy, rungwalk*13-rungboardh]);
+  }}
+}
+
+
+
+
 gableelv         = studelev + tallstudl + studw;
 ridgeboardboard  = b1x8;
 braceplateboard  = studboard;
 braceplateboardw = braceplateboard[0];
 braceplateboardh = braceplateboard[1];
 braceplateendw   = sqrt(2*braceplateboardw*braceplateboardw);
+
 
 // G A B L E
 module gable(color, name) {
@@ -514,12 +566,12 @@ southwall  (colors[7]);
 eastwall   (colors[6]);
 westwall   (colors[8]);
 loft       (colors[9]);
+ladder     ("crimson");
 eastgable  (colors[6]);
 westgable  (colors[8]);
 ridgeboard (colors[1]);
 
 lowerfloordim     = [floorx-studh, floory-studh];
-upperfloorportdim = [studwalk*3-joistw*2-c-studw, studwalk*2+studh+s-studw];
 lowerfloorarea    = lowerfloordim[0]*lowerfloordim[1];
 upperfloorarea    = lowerfloorarea - upperfloorportdim[0]*upperfloorportdim[1];
 totalfloorarea    = lowerfloorarea + upperfloorarea;
