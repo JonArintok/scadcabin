@@ -20,7 +20,6 @@ b4x4  = [3.5, 3.5];
 b4x6  = [3.5, 5.5];
 b6x6  = [5.5, 5.5];
 
-// TOOLS
 function ft(feet = 0, inches = 0) = 12*feet + inches;
 module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
   //echo(name, cuboid, transtep);
@@ -43,7 +42,6 @@ module ALERT(message = "!!  !!  !!  !!") {
 floorx = ft(16); // from outside edge to outside edge
 floory = ft(10); // from outside edge to outside edge
 
-// P I E R S
 module piers(color) {
   echo();
   echo("P I E R S");
@@ -68,7 +66,6 @@ module piers(color) {
   }}
 }
 
-// F L O O R   B E A M S
 floorbeamrise = b6x6[1];
 module floorbeams(color) {
   echo();
@@ -89,7 +86,6 @@ module floorbeams(color) {
   cubenspeak("floorbeam", floorbeams, [floorx-floorbeamsboardw, floorbeamlboardw,        0]);
 }
 
-// D I R T   C E I L I N G
 dirtceilingelev = floorbeamrise;
 dirtceilingrise = 1/4;
 floorpanelw = ft(4);
@@ -115,7 +111,6 @@ studw      = studboard[0];
 studh      = studboard[1];
 studwalk   = 16;
 
-// F L O O R   J O I S T S
 floorjoistelev = dirtceilingelev + dirtceilingrise;
 floorjoistrise = b2x8[1];
 module floorjoists(color) {
@@ -161,7 +156,6 @@ module floorjoists(color) {
   }}
 }
 
-// S U B F L O O R
 subfloorelev = floorjoistelev + floorjoistrise;
 subfloorrise = 3/4;
 module subfloor(color) {
@@ -202,7 +196,6 @@ intsheatht        = 0.5;
 upperfloorportdim = [studwalk*3-joistw*2-c-studw, studwalk*2+studh+s-studw];
 
 
-// N O R T H   W A L L
 module northwall(color) {
   echo();
   echo("NORTH WALL");
@@ -260,7 +253,6 @@ module northwall(color) {
   }}
 }
 
-// S O U T H   W A L L
 module southwall(color) {
   echo();
   echo("SOUTH WALL");
@@ -337,7 +329,6 @@ module southwall(color) {
 }
 
 
-// S M A L L   W A L L
 module smallwall(color, name) {
   echo();
   echo(name);
@@ -526,7 +517,7 @@ module westgable(color) {
 
 module ridgeboard(color) {
   echo();
-  echo("ridgeboard");
+  echo("RIDGEBOARD");
   origin = [0, 0, gableelv+studw];
   echo(origin = origin);
   ridgeboardw      = ridgeboardboard[0];
@@ -538,6 +529,45 @@ module ridgeboard(color) {
   ridgeboardz      = floory/2 - ridgeboardw/2 - studh - braceplateendw;
   translate(origin) { color(color) {
     cubenspeak("ridgeboard",   ridgeboard,   [-ridgeboardext, ridgeboardy, ridgeboardz]);
+  }}
+}
+
+module bed(color) {
+  echo();
+  echo("bed");
+  origin = [0, 0, studelev+shortstudl+joistboard[1]+floorthicknes];
+  echo(origin = origin);
+  bedw = 54;
+  bedl = 75;
+  supportboard = b2x8;
+  platboard = b1x4;
+  supportboardw = supportboard[0];
+  supportboardh = supportboard[1];
+  platboardw    = platboard[0];
+  platboardh    = platboard[1];
+  mattresselev  = supportboardh+platboardw;
+  mattressthickness = 8;
+  support    = [supportboardw, bedw, supportboardh];
+  plat       = [bedl, platboardh, platboardw];
+  mattress   = [bedl, bedw, mattressthickness];
+  shearboard = [bedl, b1x6[0], b1x6[1]];
+  supportcount = 5;
+  platcount = 13;
+  bedy = studh + 1;
+  bedx = studh + 1;
+  translate(origin) { color(color) {
+    for (i = [0:supportcount-2]) {
+      x = bedx + i*((bedl-supportboardw)/(supportcount-1));
+      cubenspeak("support", support, [x, bedy, 0]);
+    }
+    cubenspeak("support", support, [studh+1+bedl-supportboardw, bedy, 0]);
+    for (i = [0:platcount-2]) {
+      y = bedy + i*((bedw-platboardh)/(platcount-1));
+      cubenspeak("plat", plat, [bedx, y, supportboardh]);
+    }
+    cubenspeak("plat", plat, [bedx, bedy+bedw-platboardh, supportboardh]);
+    cubenspeak("mattress", mattress, [bedx, bedy, supportboardh+platboardw]);
+    cubenspeak("shearboard", shearboard, [bedx, bedy-shearboard[1], 1]);
   }}
 }
 
@@ -567,6 +597,7 @@ eastwall   (colors[6]);
 westwall   (colors[8]);
 loft       (colors[9]);
 ladder     ("crimson");
+bed        ("navy");
 eastgable  (colors[6]);
 westgable  (colors[8]);
 ridgeboard (colors[1]);
