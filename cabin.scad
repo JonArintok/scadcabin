@@ -28,9 +28,10 @@ module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
   }
 }
 module polyspeak(name, points, index, transtep = [0,0,0]) {
-  //echo(points);
-  //echo(index);
-  //echo(transtep);
+  echo(name);
+  echo(points);
+  echo(index);
+  echo(transtep);
   translate(transtep) {
     polyhedron(points, index, 10);
   }
@@ -42,11 +43,30 @@ module ALERT(message = "!!  !!  !!  !!") {
 floorx = ft(16); // from outside edge to outside edge
 floory = ft(10); // from outside edge to outside edge
 
-module piers(color) {
+module piers6(color) {
   echo();
   echo("P I E R S");
   pierw  = 12;
-  pierh = ft(3);
+  pierh = ft(2);
+  origin = [0, 0, -pierh];
+  echo(origin = origin);
+  pier = [pierw, pierw, pierh];
+  pierspacingx = (floorx-pierw)/2;
+  translate(origin) { color(color) {
+    cubenspeak("pier", pier);
+    cubenspeak("pier", pier, [pierspacingx,   0,            0]);
+    cubenspeak("pier", pier, [pierspacingx*2, 0,            0]);
+    cubenspeak("pier", pier, [0,              floory-pierw, 0]);
+    cubenspeak("pier", pier, [pierspacingx,   floory-pierw, 0]);
+    cubenspeak("pier", pier, [pierspacingx*2, floory-pierw, 0]);
+  }}
+}
+
+module piers10(color) {
+  echo();
+  echo("P I E R S");
+  pierw  = 12;
+  pierh = ft(2);
   origin = [0, 0, -pierh];
   echo(origin = origin);
   pier = [pierw, pierw, pierh];
@@ -190,7 +210,8 @@ headerz           = shortstudl - headerboardh - windowdrop;
 sillz             = headerz - lwindowroughopenh - studw - windowdrop;
 lsillx            = studwalk*3 - studw - lwindowroughopenw; // on south wall
 silly             = studwalk*4+studw*2;
-s                 = floory-silly-lwindowroughopenw-lsillx; // shift
+//s                 = floory-silly-lwindowroughopenw-lsillx; // for corner-symmetry of windows
+s                 = (floory - studh*2 - studw*2 - studwalk*6)/2 + studw/2; // for centered studs with gable
 studelev          = wallelev + studw;
 intsheatht        = 0.5;
 upperfloorportdim = [studwalk*3-joistw*2-c-studw, studwalk*2+studh+s-studw];
@@ -328,7 +349,6 @@ module southwall(color) {
   }}
 }
 
-
 module smallwall(color, name) {
   echo();
   echo(name);
@@ -342,11 +362,10 @@ module smallwall(color, name) {
   trimmer     = [studh, studw, doorroughopenh-windowdrop];
   highcripple = [studh, studw, tallstudl-shortstudl+windowdrop];
   shortstud   = [studh, studw, shortstudl];
-  studwalk    = 16;
   header      = [headerboardw, studwalk*2 - studw, headerboardh];
   sill        = [studh, lwindowroughopenw, studw];
   echo(s=s);
-  translate(origin) { color(color) {
+  translate(origin) { //color(color) {
     cubenspeak("soleplate",   soleplate,   [0, 0,                    -studw]);
     cubenspeak("tallstud",    tallstud,    [0, 0,                    0]);
     cubenspeak("tallstud",    tallstud,    [0, s,                    0]);
@@ -369,20 +388,17 @@ module smallwall(color, name) {
     cubenspeak("tallstud",    tallstud,    [0, s+studwalk*6,         0]);
     cubenspeak("tallstud",    tallstud,    [0, soleplatel-studw,     0]);
     cubenspeak("topplate",    topplate,    [0, 0,                    tallstudl]);
-  }}
+  }//}
 }
-// E A S T   W A L L
 module eastwall(color) {
   smallwall(color, "EAST WALL");
 }
-// W E S T   W A L L
 module westwall(color) {
   translate([floorx-studh, 0, 0]) {
     smallwall(color, "WEST WALL");
   }
 }
 
-// L O F T
 module loft(color) {
   echo();
   echo("LOFT");
@@ -393,9 +409,9 @@ module loft(color) {
   joistw      = joistboard[0];
   joisth      = joistboard[1];
   joist       = [joistw, floory, joisth];
-  s           = 6.5; // see "smallwall"
   shortjoist  = [joistboard[0], floory-studwalk*2-s-studh, joistboard[1]];
-  shortjoisty = studwalk*2+studh+s;
+  shortjoisty = studh+s+studwalk*2;
+  echo(shortjoisty=shortjoisty);
   crossjoist  = [studwalk*3-joistw*2-c, joistw, joisth];
   translate(origin) { color(color) {
     cubenspeak("joist",      joist,       [studh,                 0,                  0]);
@@ -421,7 +437,6 @@ module loft(color) {
 wallpanelthickness = 1/2;
 floorthickness     = 1/2;
 
-// L A D D E R
 module ladder(color) {
   echo();
   echo("LADDER");
@@ -462,25 +477,22 @@ module ladder(color) {
   }}
 }
 
-
-
-
 gableelv         = studelev + tallstudl + studw;
 ridgeboardboard  = b1x8;
 braceplateboard  = studboard;
 braceplateboardw = braceplateboard[0];
 braceplateboardh = braceplateboard[1];
 braceplateendw   = sqrt(2*braceplateboardw*braceplateboardw);
+ridgeboardw      = ridgeboardboard[0];
+ridgeboardh      = ridgeboardboard[1];
+ridgeboardz      = floory/2 - ridgeboardw/2 - studh - braceplateendw;
 
-
-// G A B L E
 module gable(color, name) {
   echo();
   echo(name);
   origin = [0, 0, gableelv+studw];
   echo(origin = origin);
   soleplate = [studh, floory, studw];
-  ridgeboardw      = ridgeboardboard[0];
   braceplatelegl   = floory/2 - ridgeboardw/2 - studh;
   braceplateside = [
   /* 0 */ [0,braceplatelegl,braceplatelegl],
@@ -494,21 +506,58 @@ module gable(color, name) {
     [studh, braceplateside[2][1], braceplateside[2][2]],
     [studh, braceplateside[3][1], braceplateside[3][2]]
   ];
-  iii = [[0,1,2,3],[4,5,6,7],[0,4,7,3],[1,5,6,2],[0,4,5,1],[2,6,7,3]];
-  translate(origin) { color(color) {
+  braceplatefaces = [[0,1,2,3],[4,5,6,7],[0,4,7,3],[1,5,6,2],[0,4,5,1],[2,6,7,3]];
+  windowelev   = 12;
+  sill   = [studh, uwindowroughopenw, studw];
+  sillz  = windowelev-studw;
+  windowy      = (floory - uwindowroughopenw)/2;
+  headerboard  = b4x4;
+  headerh      = headerboard[1];
+  windowheader = [headerboard[0], uwindowroughopenw+studw*2, headerh];
+  headerz      = windowelev+studw+uwindowroughopenh;
+  // TEST
+  //TESTY = floory-studh-braceplateendw-headerz-headerh;
+  // TEST
+  headerside = [
+    [0, floory-studh-braceplateendw-headerz-headerh, headerz+headerh],
+    [0,        studh+braceplateendw+headerz+headerh, headerz+headerh],
+    [0,        studh+braceplateendw+headerz,         headerz],
+    [0, floory-studh-braceplateendw-headerz,         headerz]
+  ];
+  header = [
+    headerside[0], headerside[1], headerside[2], headerside[3],
+    [studh, headerside[0][1], headerside[0][2]],
+    [studh, headerside[1][1], headerside[1][2]],
+    [studh, headerside[2][1], headerside[2][2]],
+    [studh, headerside[3][1], headerside[3][2]]
+  ];
+  headerfaces = [[0,1,2,3],[4,5,6,7],[0,4,7,3],[1,5,6,2],[0,4,5,1],[2,6,7,3]];
+  ridgesupport = [studh, studh, ridgeboardz-headerh-headerz];
+  studadjust = 3/4;
+  translate(origin) { //color(color) {
     cubenspeak("soleplate",   soleplate,   [0, 0, -studw]);
-    polyspeak("braceplate", braceplate, iii, [0,studh,0]);
+    polyspeak("braceplate", braceplate, braceplatefaces, [0,studh,0]);
     translate([studh,floory,0]) { rotate([0,0,180]) {
-      polyspeak("braceplate", braceplate, iii, [0,studh,0]);
+      polyspeak("braceplate", braceplate, braceplatefaces, [0,studh,0]);
     }}
-  }}
+    cubenspeak("stud",    [studh, studw, windowy-studwalk*2-studh-braceplateendw+studadjust], [0, windowy-studw-studwalk*2+studadjust, 0]);
+    cubenspeak("stud",    [studh, studw, windowy-studwalk-studh-braceplateendw+studadjust], [0, windowy-studw-studwalk+studadjust, 0]);
+    polyspeak("header",   header, headerfaces, [0, 0, 0]);
+    cubenspeak("sill",    sill,                     [0, windowy, sillz]);
+    cubenspeak("trimmer", [studh, studw, headerz],  [0, windowy-studw, 0]);
+    cubenspeak("cripple", [studh, studw, sillz],    [0, windowy, 0]);
+    cubenspeak("cripple", [studh, studw, sillz],    [0, windowy+uwindowroughopenw/2-studw/2, 0]);
+    cubenspeak("cripple", [studh, studw, sillz],    [0, windowy+uwindowroughopenw-studw, 0]);
+    cubenspeak("trimmer", [studh, studw, headerz],  [0, windowy+uwindowroughopenw, 0]);
+    cubenspeak("stud",    [studh, studw, floory-studh-braceplateendw-windowy-uwindowroughopenw-studwalk+studadjust],   [0, windowy+uwindowroughopenw+studwalk-studadjust,   0]);
+    cubenspeak("stud",    [studh, studw, floory-studh-braceplateendw-windowy-uwindowroughopenw-studwalk*2+studadjust], [0, windowy+uwindowroughopenw+studwalk*2-studadjust, 0]);
+    cubenspeak("ridge support", ridgesupport,  [0, floory/2-studh/2, headerz+headerh]);
+  }//}
 }
 
-// E A S T   G A B L E
 module eastgable(color) {
   gable(color, "EAST GABLE");
 }
-// W E S T   G A B L E
 module westgable(color) {
   translate([floorx-studh, 0, 0]) {
     gable(color, "WEST GABLE");
@@ -520,13 +569,10 @@ module ridgeboard(color) {
   echo("RIDGEBOARD");
   origin = [0, 0, gableelv+studw];
   echo(origin = origin);
-  ridgeboardw      = ridgeboardboard[0];
-  ridgeboardh      = ridgeboardboard[1];
   ridgeboardext    = 12;
   ridgeboardl      = floorx + ridgeboardext*2;
   ridgeboard       = [ridgeboardl, ridgeboardw, ridgeboardh];
   ridgeboardy      = floory/2 - ridgeboardw/2;
-  ridgeboardz      = floory/2 - ridgeboardw/2 - studh - braceplateendw;
   translate(origin) { color(color) {
     cubenspeak("ridgeboard",   ridgeboard,   [-ridgeboardext, ridgeboardy, ridgeboardz]);
   }}
@@ -586,7 +632,7 @@ colors = [
 ];
 
 // D R A W
-piers      (colors[0]);
+piers6     (colors[0]);
 floorbeams (colors[1]);
 dirtceiling(colors[8]);
 floorjoists(colors[3]);
@@ -596,7 +642,7 @@ southwall  (colors[7]);
 eastwall   (colors[6]);
 westwall   (colors[8]);
 loft       (colors[9]);
-ladder     ("crimson");
+ladder     ("salmon");
 bed        ("navy");
 eastgable  (colors[6]);
 westgable  (colors[8]);
