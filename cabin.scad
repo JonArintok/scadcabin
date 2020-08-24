@@ -1,5 +1,12 @@
 // all lengths are measured in inches
 
+
+// dirtceilingrise
+// subfloorrise
+// shearpanelthickness
+
+
+
 // ACTUAL LUMBER DIMENSIONS
 b1x2  = [0.75, 1.5];
 b1x3  = [0.75, 2.5];
@@ -21,8 +28,22 @@ b4x6  = [3.5, 5.5];
 b6x6  = [5.5, 5.5];
 
 function ft(feet = 0, inches = 0) = 12*feet + inches;
+function greaterof(a, b) = a > b ? a : b;
+function lesserof(a, b)  = a > b ? b : a;
+function middleof(a, b, c) = (
+  (a <= b) && (b <= c) ? b :
+  (a <= c) && (c <= b) ? c :
+  (b <= a) && (a <= c) ? a :
+  (b <= c) && (c <= a) ? c :
+  (c <= a) && (a <= b) ? a : b
+);
 module cubenspeak(name = "board", cuboid = [0,0,0], transtep = [0,0,0]) {
-  //echo(name, cuboid, transtep);
+  sortedcuboid = [
+    lesserof(lesserof(cuboid[0], cuboid[1]), lesserof(cuboid[0], cuboid[2])),
+    middleof(cuboid[0], cuboid[1], cuboid[2]),
+    greaterof(greaterof(cuboid[0], cuboid[1]), greaterof(cuboid[0], cuboid[2]))
+  ];
+  echo(name, sortedcuboid, transtep);
   translate(transtep) {
     cube(cuboid);
   }
@@ -45,7 +66,7 @@ floory = ft(10); // from outside edge to outside edge
 
 module piers6(color) {
   echo();
-  echo("P I E R S");
+  echo("PIERS");
   pierw  = 12;
   pierh = ft(2);
   origin = [0, 0, -pierh];
@@ -61,7 +82,6 @@ module piers6(color) {
     cubenspeak("pier", pier, [pierspacingx*2, floory-pierw, 0]);
   }}
 }
-
 module piers10(color) {
   echo();
   echo("P I E R S");
@@ -210,8 +230,7 @@ headerz           = shortstudl - headerboardh - windowdrop;
 sillz             = headerz - lwindowroughopenh - studw - windowdrop;
 lsillx            = studwalk*3 - studw - lwindowroughopenw; // on south wall
 silly             = studwalk*3+studw*2;
-//s                 = floory-silly-lwindowroughopenw-lsillx; // for corner-symmetry of windows
-s                 = (floory - studh*2 - studw*2 - studwalk*6)/2 + studw/2; // for centered studs with gable
+s                 = (floory - studh*2 - studw*2 - studwalk*6)/2 + studw/2;
 studelev          = wallelev + studw;
 intsheatht        = 0.5;
 upperfloorportdim = [studwalk*3-joistw*2-c-studw, studwalk*2+studh+s-studw];
