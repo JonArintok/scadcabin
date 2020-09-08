@@ -178,7 +178,7 @@ module northwall(color) {
   astudx          = doorhingebeamx - doorroughopenw - trimmerw;
   headerx         = studwalk*8 + studw;
   header          = [studwalk*3 - studw, headerboardw, headerboardh];
-  translate(origin) { //color(color) {
+  translate(origin) { color(color) {
     cubenspeak("soleplate",    soleplate,    [0,                    0, -studw]);
     cubenspeak("tallstud",     tallstud);
     cubenspeak("sidestud",     sidestud,     [studw,                studh-studw, 0]);
@@ -201,7 +201,7 @@ module northwall(color) {
     cubenspeak("sidestud",     sidestud,     [floorx-studw-studh,   studh-studw, 0]);
     cubenspeak("topplate0",    topplate0,    [0,                    0, tallstudl]);
     cubenspeak("topplate1",    topplate1,    [studh,                0, tallstudl+studw]);
-  }//}
+  }}
 }
 
 module southwall(color) {
@@ -496,71 +496,60 @@ module roof(color) {
   rafterboardw = rafterboard[0];
   rafterboardh = rafterboard[1];
   rafterendw   = sqrt(rafterboardh*rafterboardh*2);
-  roofext      = 12;
+  roofext      = 48;
+  //rafterside = [
+  ///*  0    7   */ [0, ridgeboardy, ridgeboardy-studh+rafterendw],
+  ///*  1    8   */ [0, ridgeboardy, ridgeboardy-studh],
+  ///* 2 3  9 10 */      [0, studh, 0], [0, 0, 0],
+  ///*  4    11  */                     [0, 0, -studh],
+  ///*  5    12  */                                     [0,-roofext,-roofext-studh+rafterendw],
+  ///*  6    13  */                                     [0,-roofext,-roofext-studh]
+  //];
+
   rafterside = [
-  /**/ [0, ridgeboardy, ridgeboardy-studh+rafterendw],
-  /**/ [0, ridgeboardy, ridgeboardy-studh],
-  /**/      [0, studh, 0], [0, 0, 0],
-  /**/                     [0, 0, -studh],
-  /**/                                              [0,0,0],
-  /**/                            [0,-roofext,0],   [0,-roofext,0]
+  /*  0    7   */ [0, ridgeboardy, ridgeboardy-studh+rafterendw],
+  /*  1    8   */ [0, ridgeboardy, ridgeboardy-studh],
+  /* 2 3  9 10 */      [0, studh, 0], [0, 0, 0],
+  /*  4    11  */                     [0, 0, -studh],
+  /*  5    12  */                                     [0,-roofext,-roofext-studh+rafterendw],
+  /*  6    13  */                                     [0,-roofext,-roofext-studh]
   ];
-  //
-  //
-  //
-  braceplate = [
-    braceplateside[0],braceplateside[1],braceplateside[2],braceplateside[3],
-    [studh, braceplateside[0][1], braceplateside[0][2]],
-    [studh, braceplateside[1][1], braceplateside[1][2]],
-    [studh, braceplateside[2][1], braceplateside[2][2]],
-    [studh, braceplateside[3][1], braceplateside[3][2]]
+  rafter = [
+    rafterside[0],rafterside[1],rafterside[2],rafterside[3],rafterside[4],rafterside[5],rafterside[6],
+    [rafterboardw, rafterside[0][1], rafterside[0][2]],
+    [rafterboardw, rafterside[1][1], rafterside[1][2]],
+    [rafterboardw, rafterside[2][1], rafterside[2][2]],
+    [rafterboardw, rafterside[3][1], rafterside[3][2]],
+    [rafterboardw, rafterside[4][1], rafterside[4][2]],
+    [rafterboardw, rafterside[5][1], rafterside[5][2]],
+    [rafterboardw, rafterside[6][1], rafterside[6][2]]
   ];
-  braceplatefaces = [[0,1,2,3],[4,5,6,7],[0,4,7,3],[1,5,6,2],[0,4,5,1],[2,6,7,3]];
-  windowelev   = 12;
-  sill   = [studh, uwindowroughopenw, studw];
-  sillz  = windowelev-studw;
-  windowy      = (floory - uwindowroughopenw)/2;
-  headerboard  = b4x4;
-  headerh      = headerboard[1];
-  windowheader = [headerboard[0], uwindowroughopenw+studw*2, headerh];
-  headerz      = windowelev+studw+uwindowroughopenh;
-  // TEST
-  //TESTY = floory-studh-braceplateendw-headerz-headerh;
-  // TEST
-  headerside = [
-    [0, floory-studh-braceplateendw-headerz-headerh, headerz+headerh],
-    [0,        studh+braceplateendw+headerz+headerh, headerz+headerh],
-    [0,        studh+braceplateendw+headerz,         headerz],
-    [0, floory-studh-braceplateendw-headerz,         headerz]
+  rafterfaces = [
+    [0, 1, 2, 3, 4, 6, 5],
+    [7, 8, 9,10,11,13,12],
+    [0, 7, 8, 1],
+    [1, 8, 9, 2],
+    [2, 9,10, 3],
+    [3,10,11, 4],
+    [4,11,13, 6],
+    [5,12,13, 6],
+    [0, 7,13, 6]
   ];
-  header = [
-    headerside[0], headerside[1], headerside[2], headerside[3],
-    [studh, headerside[0][1], headerside[0][2]],
-    [studh, headerside[1][1], headerside[1][2]],
-    [studh, headerside[2][1], headerside[2][2]],
-    [studh, headerside[3][1], headerside[3][2]]
-  ];
-  headerfaces = [[0,1,2,3],[4,5,6,7],[0,4,7,3],[1,5,6,2],[0,4,5,1],[2,6,7,3]];
-  ridgesupport = [studh, studh, ridgeboardz-headerh-headerz];
-  studadjust = 3/4;
   translate(origin) { //color(color) {
-    cubenspeak("soleplate",   soleplate,   [0, 0, -studw]);
-    polyspeak("braceplate", braceplate, braceplatefaces, [0,studh,0]);
-    translate([studh,floory,0]) { rotate([0,0,180]) {
-      polyspeak("braceplate", braceplate, braceplatefaces, [0,studh,0]);
+    ///
+    ///
+    ///
+    //raftersidefaces = [[0,1,2,3,4,6,5]];
+    //color("red") polyspeak("rafterside", rafterside, raftersidefaces, [0,0,0]);
+    ///
+    ///
+    ///
+
+    color("red") polyspeak("rafter", rafter, rafterfaces, [0,0,0]);
+    translate([rafterboardw,floory,0]) { rotate([0,0,180]) {
+      color("lime") polyspeak("rafter", rafter, rafterfaces, [0,0,0]);
     }}
-    cubenspeak("stud",    [studh, studw, windowy-studwalk*2-studh-braceplateendw+studadjust], [0, windowy-studw-studwalk*2+studadjust, 0]);
-    cubenspeak("stud",    [studh, studw, windowy-studwalk-studh-braceplateendw+studadjust], [0, windowy-studw-studwalk+studadjust, 0]);
-    polyspeak("header",   header, headerfaces, [0, 0, 0]);
-    cubenspeak("sill",    sill,                     [0, windowy, sillz]);
-    cubenspeak("trimmer", [studh, studw, headerz],  [0, windowy-studw, 0]);
-    cubenspeak("cripple", [studh, studw, sillz],    [0, windowy, 0]);
-    cubenspeak("cripple", [studh, studw, sillz],    [0, windowy+uwindowroughopenw/2-studw/2, 0]);
-    cubenspeak("cripple", [studh, studw, sillz],    [0, windowy+uwindowroughopenw-studw, 0]);
-    cubenspeak("trimmer", [studh, studw, headerz],  [0, windowy+uwindowroughopenw, 0]);
-    cubenspeak("stud",    [studh, studw, floory-studh-braceplateendw-windowy-uwindowroughopenw-studwalk+studadjust],   [0, windowy+uwindowroughopenw+studwalk-studadjust,   0]);
-    cubenspeak("stud",    [studh, studw, floory-studh-braceplateendw-windowy-uwindowroughopenw-studwalk*2+studadjust], [0, windowy+uwindowroughopenw+studwalk*2-studadjust, 0]);
-    cubenspeak("ridge support", ridgesupport,  [0, floory/2-studh/2, headerz+headerh]);
+
   }//}
 }
 
@@ -620,16 +609,17 @@ colors = [
 // D R A W
 piers     (colors[0]);
 floorjoists(colors[2]);
-northwall  (colors[5]);
-southwall  (colors[7]);
-eastwall   (colors[6]);
-westwall   (colors[8]);
+*northwall  (colors[5]);
+*southwall  (colors[7]);
+*eastwall   (colors[6]);
+*westwall   (colors[8]);
 loft       (colors[9]);
 ladder     ("salmon");
 bed        ("navy");
-eastgable  (colors[6]);
-westgable  (colors[8]);
-ridgeboard (colors[1]);
+*eastgable  (colors[6]);
+*westgable  (colors[8]);
+*ridgeboard (colors[1]);
+roof       (colors[3]);
 
 lowerfloordim     = [floorx-studh, floory-studh];
 lowerfloorarea    = lowerfloordim[0]*lowerfloordim[1];
